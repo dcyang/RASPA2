@@ -6239,7 +6239,7 @@ REAL PotentialValue(int typeA,int typeB,REAL rr,REAL scaling)
       // p_0*[exp{p_1*(1-r/p_2)}-2*exp{(p_1/2)*(1-r/p_2)}]
       // =================================================================================
       // p_0/k_B [K]       force constant
-      // p_1     [A^-1]    parameter
+      // p_1     [-]       parameter
       // p_2     [A]       reference distance
       // p_3/k_B [K]       (non-zero for a shifted potential)
       arg1=PotentialParms[typeA][typeB][0];
@@ -6253,7 +6253,7 @@ REAL PotentialValue(int typeA,int typeB,REAL rr,REAL scaling)
       // p_0*[exp{p_1*(1-r/p_2)}-2*exp{(p_1/2)*(1-r/p_2)}]*S(r)
       // =================================================================================
       // p_0/k_B [K]       force constant
-      // p_1     [A^-1]    parameter
+      // p_1     [-]       parameter
       // p_2     [A]       reference distance
       arg1=PotentialParms[typeA][typeB][0];
       arg2=PotentialParms[typeA][typeB][1];
@@ -6271,7 +6271,7 @@ REAL PotentialValue(int typeA,int typeB,REAL rr,REAL scaling)
       // p_0*[exp{p_1*(1-r/p_2)}-2*exp{(p_1/2)*(1-r/p_2)}]*S(r)
       // =================================================================================
       // p_0/k_B [K]       force constant
-      // p_1     [A^-1]    parameter
+      // p_1     [-]       parameter
       // p_2     [A]       reference distance
       arg1=PotentialParms[typeA][typeB][0];
       arg2=PotentialParms[typeA][typeB][1];
@@ -7732,7 +7732,7 @@ void PotentialGradient(int typeA,int typeB,REAL rr,REAL *energy,REAL *force_fact
       // p_0*[exp{p_1*(1-r/p_2)}-2*exp{0.5*p_1*(1-r/p_2)}]
       // =================================================================================
       // p_0/k_B [K]       force constant
-      // p_1     [A^-1]    parameter
+      // p_1     [-]       parameter
       // p_2     [A]       reference distance
       arg1=PotentialParms[typeA][typeB][0];
       arg2=PotentialParms[typeA][typeB][1];
@@ -7746,7 +7746,7 @@ void PotentialGradient(int typeA,int typeB,REAL rr,REAL *energy,REAL *force_fact
       // p_0*[exp{p_1*(1-r/p_2)}-2*exp{0.5*p_1*(1-r/p_2)}]
       // =================================================================================
       // p_0/k_B [K]       force constant
-      // p_1     [A^-1]    parameter
+      // p_1     [-]       parameter
       // p_2     [A]       reference distance
       arg1=PotentialParms[typeA][typeB][0];
       arg2=PotentialParms[typeA][typeB][1];
@@ -7769,7 +7769,7 @@ void PotentialGradient(int typeA,int typeB,REAL rr,REAL *energy,REAL *force_fact
       // p_0*[exp{p_1*(1-r/p_2)}-2*exp{0.5*p_1*(1-r/p_2)}]
       // =================================================================================
       // p_0/k_B [K]       force constant
-      // p_1     [A^-1]    parameter
+      // p_1     [-]       parameter
       // p_2     [A]       reference distance
       arg1=PotentialParms[typeA][typeB][0];
       arg2=PotentialParms[typeA][typeB][1];
@@ -9544,7 +9544,7 @@ void PotentialSecondDerivative(int typeA,int typeB,REAL rr,REAL *energy,REAL *fa
       // p_0*[exp{p_1*(1-r/p_2)}-2*exp{0.5*p_1*(1-r/p_2)}]
       // =================================================================================
       // p_0/k_B [K]       force constant
-      // p_1     [A^-1]    parameter
+      // p_1     [-]       parameter
       // p_2     [A]       reference distance
       // p_3/k_B [K]       (non-zero for a shifted potential)
       arg1=PotentialParms[typeA][typeB][0];
@@ -9560,7 +9560,7 @@ void PotentialSecondDerivative(int typeA,int typeB,REAL rr,REAL *energy,REAL *fa
       // p_0*[exp{p_1*(1-r/p_2)}-2*exp{0.5*p_1*(1-r/p_2)}]
       // =================================================================================
       // p_0/k_B [K]       force constant
-      // p_1     [A^-1]    parameter
+      // p_1     [-]       parameter
       // p_2     [A]       reference distance
       arg1=PotentialParms[typeA][typeB][0];
       arg2=PotentialParms[typeA][typeB][1];
@@ -9587,7 +9587,7 @@ void PotentialSecondDerivative(int typeA,int typeB,REAL rr,REAL *energy,REAL *fa
       // p_0*[exp{p_1*(1-r/p_2)}-2*exp{0.5*p_1*(1-r/p_2)}]
       // =================================================================================
       // p_0/k_B [K]       force constant
-      // p_1     [A^-1]    parameter
+      // p_1     [-]       parameter
       // p_2     [A]       reference distance
       arg1=PotentialParms[typeA][typeB][0];
       arg2=PotentialParms[typeA][typeB][1];
@@ -11146,7 +11146,7 @@ REAL PotentialCorrection(int typeA,int typeB,REAL r)
       // p_0*[exp{p_1*(1-r/p_2)}-2*exp{(p_1/2)*(1-r/p_2)}]
       // =================================================================================
       // p_0/k_B [K]       force constant
-      // p_1     [A^-1]    parameter
+      // p_1     [-]       parameter
       // p_2     [A]       reference distance
       arg1=PotentialParms[typeA][typeB][0];
       arg2=PotentialParms[typeA][typeB][1];
@@ -11477,7 +11477,7 @@ REAL PotentialCorrectionPressure(int typeA,int typeB,REAL r)
       // p_0*(exp[p_1*(1-r/p_2)]-2*exp[(p_1/2)*(1-r/p_2)])
       // =================================================================================
       // p_0/k_B [K]       force constant
-      // p_1     [A^-1]    parameter
+      // p_1     [-]       parameter
       // p_2     [A]       reference distance
       arg1=PotentialParms[typeA][typeB][0];
       arg2=PotentialParms[typeA][typeB][1];

@@ -2776,10 +2776,10 @@ void PrintPreSimulationStatusCurrentSystem(int system)
             // p_0*[exp{p_1*(1-r/p_2)}-2*exp{(p_1/2)*(1-r/p_2)}]
             // =================================================================================
             // p_0/k_B [K]       force constant
-            // p_1     [A^-1]    parameter
+            // p_1     [-]       parameter
             // p_2     [A]       reference distance
             // p_3/k_B [K]       (non-zero for a shifted potential)
-            fprintf(FilePtr,"%7s - %7s [MORSE2] p_0/k_B: %9.5lf [K], p_1: %8.5lf [A^-1], p_2: %8.5lf [A], "
+            fprintf(FilePtr,"%7s - %7s [MORSE2] p_0/k_B: %9.5lf [K], p_1: %8.5lf [-], p_2: %8.5lf [A], "
                             "shift/k_B: %12.8lf [K], tailcorrection: %s\n",
               PseudoAtoms[i].Name,
               PseudoAtoms[j].Name,
@@ -2793,9 +2793,9 @@ void PrintPreSimulationStatusCurrentSystem(int system)
             // {p_0*[exp{p_1*(1-r/p_2)}-2*exp{(p_1/2)*(1-r/p_2)}]}*S(r)
             // =================================================================================
             // p_0/k_B [K]       force constant
-            // p_1     [A^-1]    parameter
+            // p_1     [-]       parameter
             // p_2     [A]       reference distance
-            fprintf(FilePtr,"%7s - %7s [MORSE2_SMOOTHED3] p_0/k_B: %9.5lf [K], p_1: %8.5lf [A^-1], p_2: %8.5lf [A]\n",
+            fprintf(FilePtr,"%7s - %7s [MORSE2_SMOOTHED3] p_0/k_B: %9.5lf [K], p_1: %8.5lf [-], p_2: %8.5lf [A]\n",
               PseudoAtoms[i].Name,
               PseudoAtoms[j].Name,
               (double)PotentialParms[i][j][0]*ENERGY_TO_KELVIN,
@@ -2806,9 +2806,9 @@ void PrintPreSimulationStatusCurrentSystem(int system)
             // {p_0*[exp{p_1*(1-r/p_2)}-2*exp{(p_1/2)*(1-r/p_2)}]}*S(r)
             // =================================================================================
             // p_0/k_B [K]       force constant
-            // p_1     [A^-1]    parameter
+            // p_1     [-]       parameter
             // p_2     [A]       reference distance
-            fprintf(FilePtr,"%7s - %7s [MORSE2_SMOOTHED5] p_0/k_B: %9.5lf [K], p_1: %8.5lf [A^-1], p_2: %8.5lf [A]\n",
+            fprintf(FilePtr,"%7s - %7s [MORSE2_SMOOTHED5] p_0/k_B: %9.5lf [K], p_1: %8.5lf [-], p_2: %8.5lf [A]\n",
               PseudoAtoms[i].Name,
               PseudoAtoms[j].Name,
               (double)PotentialParms[i][j][0]*ENERGY_TO_KELVIN,
