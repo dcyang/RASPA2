@@ -686,6 +686,7 @@ void PrintPreSimulationStatusCurrentSystem(int system)
   fprintf(FilePtr,"===========================================\n");
   fprintf(FilePtr,"Energy to Kelvin:                              %18.10f\n",ENERGY_TO_KELVIN);
   fprintf(FilePtr,"FH correction factor                           %18.10f\n",FH_CONVERSION_FACTOR);
+  fprintf(FilePtr,"FH4 correction factor                          %18.10f\n",FH4_CONVERSION_FACTOR);
   fprintf(FilePtr,"Heat capacity conversion factor:               %18.10f\n",HEAT_CAPACITY_CONVERSION_FACTOR);
   fprintf(FilePtr,"From Debye to internal units:                  %18.10f\n",DEBYE_CONVERSION_FACTOR);
   fprintf(FilePtr,"Isothermal compressibility conversion factor:  %18.10f\n",ISOTHERMAL_COMPRESSIBILITY_CONVERSION_FACTOR);
@@ -2618,6 +2619,25 @@ void PrintPreSimulationStatusCurrentSystem(int system)
               (double)PotentialParms[i][j][0]*ENERGY_TO_KELVIN,
               (double)PotentialParms[i][j][1],
               (double)PotentialParms[i][j][2]);
+            break;
+          case FH4_LENNARD_JONES:
+            // 4*p_0*((p_1/r)^12-(p_1/r)^6)+(h_bar^2/(24 p_2 K_B T))*4*p_0*(132*(p_1/r)^12-30*(p_1/r)^6)/r^2
+            // =============================================================================================
+            // p_0/k_B [K]    strength parameter epsilon
+            // p_1     [A]    size parameter sigma
+            // p_2     [u]    reduced mass in unified atomic mass units
+            // p_3/k_B [K]    (non-zero for a shifted potential)
+            // T       [K]    the temperature
+            fprintf(FilePtr,"%7s - %7s [FH4_LENNARD_JONES] p_0/k_B: %8.5lf [K], p_1: %8.5lf [A], p_2: %8.5lf [u] (h^2/(24 p_2 k_B T)=%8.5f, h^4/(1152 (p_2 k_B T)^2)=%8.5f), shift/k_B: %8.5lf [K], tailcorrection: %s\n",
+              PseudoAtoms[i].Name,
+              PseudoAtoms[j].Name,
+              (double)PotentialParms[i][j][0]*ENERGY_TO_KELVIN,
+              (double)PotentialParms[i][j][1],
+              (double)PotentialParms[i][j][2],
+              (double)(FH_CONVERSION_FACTOR/PotentialParms[i][j][2]),
+              (double)(FH4_CONVERSION_FACTOR/SQR(PotentialParms[i][j][2])),
+              (double)PotentialParms[i][j][3]*ENERGY_TO_KELVIN,
+              TailCorrection[i][j]?"yes":"no");
             break;
           case LENNARD_JONES_SHIFTED_FORCE:
             // 4*p_0*{[(p_1/r)^12-(p_1/r)^6]-[(p_1/rc)^12-(p_1/rc)^6]}+[12*(p_1/rc)^12-6*(p_1/rc)^6]*(r-rc)/rc

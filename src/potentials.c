@@ -455,6 +455,24 @@ void ParseForceFieldSelfParameters(char *Arguments,int i,char *PotentialName)
     PotentialParms[i][i][2]=arg3;
     PotentialParms[i][i][3]=(REAL)0.0;
   }
+  // 4*p_0*((p_1/r)^12-(p_1/r)^6)
+  //              + (h_bar^2/(24 p_2 k_B T))*4*p_0*(132*(p_1/r)^12-30*(p_1/r)^6)/r^2
+  //        + (h_bar^4/(1152 (p_2 k_B T)^2))*4*p_0*(23844*(p_1/r)^12-1590*(p_1/r)^6)/r^4
+  // =============================================================================================
+  // p_0/k_B [K]    strength parameter epsilon
+  // p_1     [A]    size parameter sigma
+  // p_2     [u]    reduced mass in unified atomic mass units
+  // p_3/k_B [K]    (non-zero for a shifted potential)
+  // T       [K]    the temperature
+  if ((strcasecmp(PotentialName,"FH4_LENNARD_JONES")==0)||(strcasecmp(PotentialName,"FH4-LENNARD-JONES")==0))
+  {
+    PotentialType[i][i]=FH4_LENNARD_JONES;
+    sscanf(Arguments,"%lf %lf %lf",&arg1,&arg2,&arg3);
+    PotentialParms[i][i][0]=arg1*KELVIN_TO_ENERGY;
+    PotentialParms[i][i][1]=arg2;
+    PotentialParms[i][i][2]=arg3;
+    PotentialParms[i][i][3]=(REAL)0.0;
+  }
   // 4*p_0*{[(p_1/r)^12-(p_1/r)^6]-[(p_1/rc)^12-(p_1/rc)^6]}+[12*(p_1/rc)^12-6*(p_1/rc)^6]*(r-rc)/rc
   // ===============================================================================================
   // p_0/k_B [K]    strength parameter epsilon
@@ -1598,6 +1616,29 @@ void ParseForceFieldBinaryParameters(char *Arguments,int i,int j,char *Potential
   {
     PotentialType[i][j]=FEYNMAN_HIBBS_LENNARD_JONES;
     PotentialType[j][i]=FEYNMAN_HIBBS_LENNARD_JONES;
+    sscanf(Arguments,"%lf %lf %lf",&arg1,&arg2,&arg3);
+    PotentialParms[j][i][0]=arg1*KELVIN_TO_ENERGY;
+    PotentialParms[i][j][0]=arg1*KELVIN_TO_ENERGY;
+    PotentialParms[j][i][1]=arg2;
+    PotentialParms[i][j][1]=arg2;
+    PotentialParms[j][i][2]=arg3;
+    PotentialParms[i][j][2]=arg3;
+    PotentialParms[j][i][3]=(REAL)0.0;
+    PotentialParms[i][j][3]=(REAL)0.0;
+  }
+  // 4*p_0*((p_1/r)^12-(p_1/r)^6)
+  //              + (h_bar^2/(24 p_2 k_B T))*4*p_0*(132*(p_1/r)^12-30*(p_1/r)^6)/r^2
+  //        + (h_bar^4/(1152 (p_2 k_B T)^2))*4*p_0*(23844*(p_1/r)^12-1590*(p_1/r)^6)/r^4
+  // =============================================================================================
+  // p_0/k_B [K]    strength parameter epsilon
+  // p_1     [A]    size parameter sigma
+  // p_2     [u]    reduced mass in unified atomic mass units
+  // p_3/k_B [K]    (non-zero for a shifted potential)
+  // T       [K]    the temperature
+  if((strcasecmp(PotentialName,"FH4_LENNARD_JONES")==0)||(strcasecmp(PotentialName,"FH4-LENNARD-JONES")==0))
+  {
+    PotentialType[i][j]=FH4_LENNARD_JONES;
+    PotentialType[j][i]=FH4_LENNARD_JONES;
     sscanf(Arguments,"%lf %lf %lf",&arg1,&arg2,&arg3);
     PotentialParms[j][i][0]=arg1*KELVIN_TO_ENERGY;
     PotentialParms[i][j][0]=arg1*KELVIN_TO_ENERGY;
@@ -3361,6 +3402,18 @@ void ReadForceFieldDefinitionsMixingRules(void)
           PotentialParms[j][i][2]=0.5*(PotentialParms[i][i][2]+PotentialParms[j][j][2]);
         }
 
+        if((PotentialType[i][i]==FH4_LENNARD_JONES)&&(PotentialType[j][j]==FH4_LENNARD_JONES))
+        {
+          PotentialType[i][j]=FH4_LENNARD_JONES;
+          PotentialType[j][i]=FH4_LENNARD_JONES;
+          PotentialParms[i][j][0]=sqrt(PotentialParms[i][i][0]*PotentialParms[j][j][0]); // p_0^ij=sqrt(p_0^i*p_0^j)
+          PotentialParms[j][i][0]=sqrt(PotentialParms[i][i][0]*PotentialParms[j][j][0]); // p_0^ji=sqrt(p_0^j*p_0^i)
+          PotentialParms[i][j][1]=0.5*(PotentialParms[i][i][1]+PotentialParms[j][j][1]); // p_1^ij=(p_1^i+p_1^j)/2
+          PotentialParms[j][i][1]=0.5*(PotentialParms[i][i][1]+PotentialParms[j][j][1]); // p_1^ji=(p_1^j+p_1^i)/2
+          PotentialParms[i][j][2]=2.0*PotentialParms[i][i][2]*PotentialParms[j][j][2]/(PotentialParms[i][i][2]+PotentialParms[j][j][2]);
+          PotentialParms[j][i][2]=2.0*PotentialParms[i][i][2]*PotentialParms[j][j][2]/(PotentialParms[i][i][2]+PotentialParms[j][j][2]);
+        }
+
         if((PotentialType[i][i]==LENNARD_JONES_SHIFTED_FORCE)&&(PotentialType[j][j]==LENNARD_JONES_SHIFTED_FORCE))
         {
           PotentialType[i][j]=LENNARD_JONES_SHIFTED_FORCE;
@@ -3947,6 +4000,18 @@ void ReadForceFieldDefinitionsMixingRules(void)
           PotentialParms[j][i][1]=sqrt(PotentialParms[i][i][1]*PotentialParms[j][j][1]); // p_1^ji=sqrt(p_1^j*p_1^i)
           PotentialParms[i][j][2]=0.5*(PotentialParms[i][i][2]+PotentialParms[j][j][2]);
           PotentialParms[j][i][2]=0.5*(PotentialParms[i][i][2]+PotentialParms[j][j][2]);
+        }
+
+        if((PotentialType[i][i]==FH4_LENNARD_JONES)&&(PotentialType[j][j]==FH4_LENNARD_JONES))
+        {
+          PotentialType[i][j]=FH4_LENNARD_JONES;
+          PotentialType[j][i]=FH4_LENNARD_JONES;
+          PotentialParms[i][j][0]=sqrt(PotentialParms[i][i][0]*PotentialParms[j][j][0]); // p_0^ij=sqrt(p_0^i*p_0^j)
+          PotentialParms[j][i][0]=sqrt(PotentialParms[i][i][0]*PotentialParms[j][j][0]); // p_0^ji=sqrt(p_0^j*p_0^i)
+          PotentialParms[i][j][1]=sqrt(PotentialParms[i][i][1]*PotentialParms[j][j][1]); // p_1^ij=sqrt(p_1^i*p_1^j)
+          PotentialParms[j][i][1]=sqrt(PotentialParms[i][i][1]*PotentialParms[j][j][1]); // p_1^ji=sqrt(p_1^j*p_1^i)
+          PotentialParms[i][j][2]=2.0*PotentialParms[i][i][2]*PotentialParms[j][j][2]/(PotentialParms[i][i][2]+PotentialParms[j][j][2]);
+          PotentialParms[j][i][2]=2.0*PotentialParms[i][i][2]*PotentialParms[j][j][2]/(PotentialParms[i][i][2]+PotentialParms[j][j][2]);
         }
 
         if((PotentialType[i][i]==LENNARD_JONES_SHIFTED_FORCE)&&(PotentialType[j][j]==LENNARD_JONES_SHIFTED_FORCE))
@@ -4585,6 +4650,16 @@ void ReadForceFieldDefinitions(void)
           PotentialParms[i][j][2]=1.0/(1.0/PotentialParms[i][i][2]+1.0/PotentialParms[j][j][2]);
           PotentialParms[j][i][2]=1.0/(1.0/PotentialParms[i][i][2]+1.0/PotentialParms[j][j][2]);
           break;
+        case FH4_LENNARD_JONES:
+          PotentialType[i][j]=FH4_LENNARD_JONES;
+          PotentialType[j][i]=FH4_LENNARD_JONES;
+          PotentialParms[i][j][0]=sqrt(PotentialParms[i][i][0]*PotentialParms[j][j][0]); // p_0^ij=sqrt(p_0^i*p_0^j)
+          PotentialParms[j][i][0]=sqrt(PotentialParms[i][i][0]*PotentialParms[j][j][0]); // p_0^ji=sqrt(p_0^j*p_0^i)
+          PotentialParms[i][j][1]=0.5*(PotentialParms[i][i][1]+PotentialParms[j][j][1]); // p_1^ij=(p_1^i+p_1^j)/2
+          PotentialParms[j][i][1]=0.5*(PotentialParms[i][i][1]+PotentialParms[j][j][1]); // p_1^ji=(p_1^j+p_1^i)/2
+          PotentialParms[i][j][2]=1.0/(1.0/PotentialParms[i][i][2]+1.0/PotentialParms[j][j][2]);
+          PotentialParms[j][i][2]=1.0/(1.0/PotentialParms[i][i][2]+1.0/PotentialParms[j][j][2]);
+          break;
         case LENNARD_JONES_SHIFTED_FORCE:
           PotentialType[i][j]=LENNARD_JONES_SHIFTED_FORCE;
           PotentialType[j][i]=LENNARD_JONES_SHIFTED_FORCE;
@@ -4988,6 +5063,16 @@ void ReadForceFieldDefinitions(void)
           PotentialParms[i][j][2]=1.0/(1.0/PotentialParms[i][i][2]+1.0/PotentialParms[j][j][2]);
           PotentialParms[j][i][2]=1.0/(1.0/PotentialParms[i][i][2]+1.0/PotentialParms[j][j][2]);
           break;
+        case FH4_LENNARD_JONES:
+          PotentialType[i][j]=FH4_LENNARD_JONES;
+          PotentialType[j][i]=FH4_LENNARD_JONES;
+          PotentialParms[i][j][0]=sqrt(PotentialParms[i][i][0]*PotentialParms[j][j][0]); // p_0^ij=sqrt(p_0^i*p_0^j)
+          PotentialParms[j][i][0]=sqrt(PotentialParms[i][i][0]*PotentialParms[j][j][0]); // p_0^ji=sqrt(p_0^j*p_0^i)
+          PotentialParms[i][j][1]=sqrt(PotentialParms[i][i][1]*PotentialParms[j][j][1]); // p_1^ij=sqrt(p_1^i*p_1^j)
+          PotentialParms[j][i][1]=sqrt(PotentialParms[i][i][1]*PotentialParms[j][j][1]); // p_1^ji=sqrt(p_1^j*p_1^i)
+          PotentialParms[i][j][2]=1.0/(1.0/PotentialParms[i][i][2]+1.0/PotentialParms[j][j][2]);
+          PotentialParms[j][i][2]=1.0/(1.0/PotentialParms[i][i][2]+1.0/PotentialParms[j][j][2]);
+          break;
         case LENNARD_JONES_SHIFTED_FORCE:
           PotentialType[i][j]=LENNARD_JONES_SHIFTED_FORCE;
           PotentialType[j][i]=LENNARD_JONES_SHIFTED_FORCE;
@@ -5321,6 +5406,14 @@ void ComputePotentialShifts(void)
           break;
         case FEYNMAN_HIBBS_LENNARD_JONES2_SMOOTHED3:
         case FEYNMAN_HIBBS_LENNARD_JONES2_SMOOTHED5:
+          break;
+        case FH4_LENNARD_JONES:
+          if(ShiftPotential[i][j])
+            arg4=PotentialValue(i,j,CutOffVDWSquared,1.0);
+          else
+            arg4=(REAL)0.0;
+          PotentialParms[j][i][3]=arg4;
+          PotentialParms[i][j][3]=arg4;
           break;
         case LENNARD_JONES_SHIFTED_FORCE:
         case LENNARD_JONES_SHIFTED_FORCE2:
@@ -6067,6 +6160,23 @@ REAL PotentialValue(int typeA,int typeB,REAL rr,REAL scaling)
         return SwitchingValue*4.0*arg1*(rri3*(rri3-1.0)+arg3*(rri3*(132.0*rri3-30.0)/rr));
       }
       return 4.0*arg1*(rri3*(rri3-1.0)+arg3*(rri3*(132.0*rri3-30.0)/rr));
+    case FH4_LENNARD_JONES:
+      // 4*p_0*((p_1/r)^12-(p_1/r)^6)
+      //              + (h_bar^2/(24 p_2 k_B T))*4*p_0*(132*(p_1/r)^12-30*(p_1/r)^6)/r^2
+      //        + (h_bar^4/(1152 (p_2 k_B T)^2))*4*p_0*(23844*(p_1/r)^12-1590*(p_1/r)^6)/r^4
+      // =============================================================================================
+      // p_0/k_B [K]    strength parameter epsilon
+      // p_1     [A]    size parameter sigma
+      // p_2     [u]    reduced mass in unified atomic mass units
+      // p_3/k_B [K]    (non-zero for a shifted potential)
+      // T       [K]    the temperature
+      arg1=PotentialParms[typeA][typeB][0];
+      arg2=SQR(PotentialParms[typeA][typeB][1]);
+      arg3=FH_CONVERSION_FACTOR/(PotentialParms[typeA][typeB][2]*therm_baro_stats.ExternalTemperature[CurrentSystem]);
+      arg4=PotentialParms[typeA][typeB][3];
+      arg5=FH4_CONVERSION_FACTOR/SQR(PotentialParms[typeA][typeB][2]*therm_baro_stats.ExternalTemperature[CurrentSystem]);
+      rri3=CUBE(arg2/rr);
+      return 4.0*arg1*(rri3*(rri3-1.0) + arg3*(rri3*(132.0*rri3-30.0)/rr) + arg5*(rri3*(23844.0*rri3-1590.0)/(rr*rr))) - arg4;
     case LENNARD_JONES_SHIFTED_FORCE:
       // 4*p_0*{[(p_1/r)^12-(p_1/r)^6]-[(p_1/rc)^12-(p_1/rc)^6]}+[12*(p_1/rc)^12-6*(p_1/rc)^6]*(r-rc)/rc
       // ===============================================================================================
@@ -7518,6 +7628,25 @@ void PotentialGradient(int typeA,int typeB,REAL rr,REAL *energy,REAL *force_fact
         fcVal=U*SwitchingValueDerivative/r+fcVal*SwitchingValue;
         U*=SwitchingValue;
       }
+      break;
+    case FH4_LENNARD_JONES:
+      // 4*p_0*((p_1/r)^12-(p_1/r)^6)
+      //              + (h_bar^2/(24 p_2 k_B T))*4*p_0*(132*(p_1/r)^12-30*(p_1/r)^6)/r^2
+      //        + (h_bar^4/(1152 (p_2 k_B T)^2))*4*p_0*(23844*(p_1/r)^12-1590*(p_1/r)^6)/r^4
+      // =============================================================================================
+      // p_0/k_B [K]    strength parameter epsilon
+      // p_1     [A]    size parameter sigma
+      // p_2     [u]    reduced mass in unified atomic mass units
+      // p_3/k_B [K]    (non-zero for a shifted potential)
+      // T       [K]    the temperature
+      arg1=PotentialParms[typeA][typeB][0];
+      arg2=SQR(PotentialParms[typeA][typeB][1]);
+      arg3=FH_CONVERSION_FACTOR/(PotentialParms[typeA][typeB][2]*therm_baro_stats.ExternalTemperature[CurrentSystem]);
+      arg4=PotentialParms[typeA][typeB][3];
+      arg5=FH4_CONVERSION_FACTOR/SQR(PotentialParms[typeA][typeB][2]*therm_baro_stats.ExternalTemperature[CurrentSystem]);
+      rri3=CUBE(arg2/rr);
+      U = 4.0*arg1*(rri3*(rri3-1.0) + arg3*(rri3*(132.0*rri3-30.0)/rr) + arg5*(rri3*(23844.0*rri3-1590.0)/(rr*rr))) - arg4;
+      fcVal=48.0*arg1*(rri3*(0.5-rri3) + arg3*rri3*(20.0-154.0*rri3)/rr + arg5*rri3*(1325.0-31792.0*rri3)/(rr*rr) )/rr;
       break;
     case LENNARD_JONES_SHIFTED_FORCE:
       // 4*p_0*{[(p_1/r)^12-(p_1/r)^6]-[(p_1/rc)^12-(p_1/rc)^6]}+[12*(p_1/rc)^12-6*(p_1/rc)^6]*(r-rc)/rc
@@ -9290,6 +9419,26 @@ void PotentialSecondDerivative(int typeA,int typeB,REAL rr,REAL *energy,REAL *fa
         fcVal1=U*SwitchingValueDerivative/r+fcVal1*SwitchingValue;
         U*=SwitchingValue;
       }
+      break;
+    case FH4_LENNARD_JONES:
+      // 4*p_0*((p_1/r)^12-(p_1/r)^6)
+      //              + (h_bar^2/(24 p_2 k_B T))*4*p_0*(132*(p_1/r)^12-30*(p_1/r)^6)/r^2
+      //        + (h_bar^4/(1152 (p_2 k_B T)^2))*4*p_0*(23844*(p_1/r)^12-1590*(p_1/r)^6)/r^4
+      // =============================================================================================
+      // p_0/k_B [K]    strength parameter epsilon
+      // p_1     [A]    size parameter sigma
+      // p_2     [u]    reduced mass in unified atomic mass units
+      // p_3/k_B [K]    (non-zero for a shifted potential)
+      // T       [K]    the temperature
+      arg1=PotentialParms[typeA][typeB][0];
+      arg2=SQR(PotentialParms[typeA][typeB][1]);
+      arg3=FH_CONVERSION_FACTOR/(PotentialParms[typeA][typeB][2]*therm_baro_stats.ExternalTemperature[CurrentSystem]);
+      arg4=PotentialParms[typeA][typeB][3];
+      arg5=FH4_CONVERSION_FACTOR/SQR(PotentialParms[typeA][typeB][2]*therm_baro_stats.ExternalTemperature[CurrentSystem]);
+      rri3=CUBE(arg2/rr);
+      U = 4.0*arg1*(rri3*(rri3-1.0) + arg3*(rri3*(132.0*rri3-30.0)/rr) + arg5*(rri3*(23844.0*rri3-1590.0)/(rr*rr))) - arg4;
+      fcVal1 = 48.0*arg1*(rri3*(0.5-rri3) + arg3*rri3*(20.0-154.0*rri3)/rr + arg5*rri3*(1325.0-31792.0*rri3)/(rr*rr) )/rr;
+      fcVal2 = 96.0*arg1*((rri3*(7.0*rri3-2.0)) + arg3*rri3*(1232.0*rri3-100.0)/rr + arg5*rri3*(286128.0*rri3-7950.0)/SQR(rr))/SQR(rr);
       break;
     case LENNARD_JONES_SHIFTED_FORCE:
       // 4*p_0*{[(p_1/r)^12-(p_1/r)^6]-[(p_1/rc)^12-(p_1/rc)^6]}+[12*(p_1/rc)^12-6*(p_1/rc)^6]*(r-rc)/rc
@@ -11104,6 +11253,26 @@ REAL PotentialCorrection(int typeA,int typeB,REAL r)
     case FEYNMAN_HIBBS_LENNARD_JONES2_SMOOTHED3:
     case FEYNMAN_HIBBS_LENNARD_JONES2_SMOOTHED5:
       return 0.0;
+    case FH4_LENNARD_JONES:
+      // 4*p_0*((p_1/r)^12-(p_1/r)^6)
+      //              + (h_bar^2/(24 p_2 k_B T))*4*p_0*(132*(p_1/r)^12-30*(p_1/r)^6)/r^2
+      //        + (h_bar^4/(1152 (p_2 k_B T)^2))*4*p_0*(23844*(p_1/r)^12-1590*(p_1/r)^6)/r^4
+      // =============================================================================================
+      // p_0/k_B [K]    strength parameter epsilon
+      // p_1     [A]    size parameter sigma
+      // p_2     [u]    reduced mass in unified atomic mass units
+      // T       [K]    the temperature
+      arg1=PotentialParms[typeA][typeB][0];
+      arg2=PotentialParms[typeA][typeB][1];
+      arg3=FH_CONVERSION_FACTOR/(PotentialParms[typeA][typeB][2]*therm_baro_stats.ExternalTemperature[CurrentSystem]);
+      arg5=FH4_CONVERSION_FACTOR/SQR(PotentialParms[typeA][typeB][2]*therm_baro_stats.ExternalTemperature[CurrentSystem]);
+      term1=CUBE(arg2/r);
+      term2=CUBE(term1);
+      term3=SQR(term1);
+      term4=SQR(term3);
+      return (4.0/3.0)*arg1*CUBE(arg2)*(term2/3.0-term1)
+           + arg3*24.0*arg1*r*(2.0*term4-term3)
+           + arg5*24.0*arg1*((3974.0/13.0)*term4 - (265.0/7.0)*term3)/r;
     case LENNARD_JONES_SHIFTED_FORCE:
     case LENNARD_JONES_SHIFTED_FORCE2:
       return 0.0;
@@ -11437,6 +11606,26 @@ REAL PotentialCorrectionPressure(int typeA,int typeB,REAL r)
     case FEYNMAN_HIBBS_LENNARD_JONES2_SMOOTHED3:
     case FEYNMAN_HIBBS_LENNARD_JONES2_SMOOTHED5:
       return 0.0;
+    case FH4_LENNARD_JONES:
+      // 4*p_0*((p_1/r)^12-(p_1/r)^6)
+      //              + (h_bar^2/(24 p_2 k_B T))*4*p_0*(132*(p_1/r)^12-30*(p_1/r)^6)/r^2
+      //        + (h_bar^4/(1152 (p_2 k_B T)^2))*4*p_0*(23844*(p_1/r)^12-1590*(p_1/r)^6)/r^4
+      // =============================================================================================
+      // p_0/k_B [K]    strength parameter epsilon
+      // p_1     [A]    size parameter sigma
+      // p_2     [u]    reduced mass in unified atomic mass units
+      // T       [K]    the temperature
+      arg1=PotentialParms[typeA][typeB][0];
+      arg2=PotentialParms[typeA][typeB][1];
+      arg3=FH_CONVERSION_FACTOR/(PotentialParms[typeA][typeB][2]*therm_baro_stats.ExternalTemperature[CurrentSystem]);
+      arg5=FH4_CONVERSION_FACTOR/SQR(PotentialParms[typeA][typeB][2]*therm_baro_stats.ExternalTemperature[CurrentSystem]);
+      term1=CUBE(arg2/r);
+      term2=CUBE(term1);
+      term3=SQR(term1);
+      term4=SQR(term3);
+      return 8.0*arg1*CUBE(arg2)*(term1-(2.0/3.0)*CUBE(term1))
+           + arg3*96.0*arg1*r*(-7.0*term4+2.0*term3)
+           + arg5*96.0*arg1*((1325.0/16.0)*term3 - (7948.0/7.0)*term4)/(r*r);
     case LENNARD_JONES_SHIFTED_FORCE:
     case LENNARD_JONES_SHIFTED_FORCE2:
       return 0.0;

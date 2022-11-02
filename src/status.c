@@ -2148,6 +2148,31 @@ void PrintVDWEnergyStatus(int nr,char *string,int typeA,int typeB,REAL r,REAL en
           energy*ENERGY_TO_KJ_PER_MOL,
           energy*ENERGY_TO_KCAL_PER_MOL);
       break;
+    case FH4_LENNARD_JONES:
+      // 4*p_0*((p_1/r)^12-(p_1/r)^6)+4 [p_0*(132*(p_1/r)^12-30*(p_1/r)^6)/r^2]*(p_2/T)
+      // ======================================================================================
+      // p_0/k_B [K]
+      // p_1     [A]
+      // p_2     [A^2]
+      // p_3/k_B [K]  (non-zero for a shifted potential)
+      // T is the temperature
+      arg1=PotentialParms[typeA][typeB][0];
+      arg2=PotentialParms[typeA][typeB][1];
+      arg3=PotentialParms[typeA][typeB][2];
+      arg4=PotentialParms[typeA][typeB][3];
+      fprintf(OutputFilePtr[CurrentSystem],"%4d FH4_LENNARD_JONES %s, p_0/k_B=%8.5f [K], p_1=%8.5f [A], p_2=%8.5f [A^2], shift/k_B=%8.5f [K]"
+                                           "Distance %8.5f [A], Energy: %10.5f [K] %8.5f [kJ/mol] %8.5f [kcal/mol]\n",
+          nr++,
+          string,
+          arg1*ENERGY_TO_KELVIN,
+          arg2,
+          arg3,
+          arg4*ENERGY_TO_KELVIN,
+          r,
+          energy*ENERGY_TO_KELVIN,
+          energy*ENERGY_TO_KJ_PER_MOL,
+          energy*ENERGY_TO_KCAL_PER_MOL);
+      break;
     case LENNARD_JONES_SHIFTED_FORCE:
       // 4*p_0*{[(p_1/r)^12-(p_1/r)^6]-[(p_1/rc)^12-(p_1/rc)^6]}+[12*(p_1/rc)^12-6*(p_1/rc)^6]*(r-rc)/rc
       // ===============================================================================================
