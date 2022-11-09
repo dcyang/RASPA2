@@ -3413,6 +3413,28 @@ void ReadForceFieldDefinitionsMixingRules(void)
           PotentialParms[i][j][2]=2.0*PotentialParms[i][i][2]*PotentialParms[j][j][2]/(PotentialParms[i][i][2]+PotentialParms[j][j][2]);
           PotentialParms[j][i][2]=2.0*PotentialParms[i][i][2]*PotentialParms[j][j][2]/(PotentialParms[i][i][2]+PotentialParms[j][j][2]);
         }
+        if((PotentialType[i][i]==LENNARD_JONES)&&(PotentialType[j][j]==FH4_LENNARD_JONES))
+        {
+          PotentialType[i][j]=FH4_LENNARD_JONES;
+          PotentialType[j][i]=FH4_LENNARD_JONES;
+          PotentialParms[i][j][0]=sqrt(PotentialParms[i][i][0]*PotentialParms[j][j][0]); // p_0^ij=sqrt(p_0^i*p_0^j)
+          PotentialParms[j][i][0]=sqrt(PotentialParms[i][i][0]*PotentialParms[j][j][0]); // p_0^ji=sqrt(p_0^j*p_0^i)
+          PotentialParms[i][j][1]=0.5*(PotentialParms[i][i][1]+PotentialParms[j][j][1]); // p_1^ij=(p_1^i+p_1^j)/2
+          PotentialParms[j][i][1]=0.5*(PotentialParms[i][i][1]+PotentialParms[j][j][1]); // p_1^ji=(p_1^j+p_1^i)/2
+          PotentialParms[i][j][2]=2.0*PotentialParms[j][j][2];
+          PotentialParms[j][i][2]=2.0*PotentialParms[j][j][2];
+        }
+        if((PotentialType[i][i]==FH4_LENNARD_JONES)&&(PotentialType[j][j]==LENNARD_JONES))
+        {
+          PotentialType[i][j]=FH4_LENNARD_JONES;
+          PotentialType[j][i]=FH4_LENNARD_JONES;
+          PotentialParms[i][j][0]=sqrt(PotentialParms[i][i][0]*PotentialParms[j][j][0]); // p_0^ij=sqrt(p_0^i*p_0^j)
+          PotentialParms[j][i][0]=sqrt(PotentialParms[i][i][0]*PotentialParms[j][j][0]); // p_0^ji=sqrt(p_0^j*p_0^i)
+          PotentialParms[i][j][1]=0.5*(PotentialParms[i][i][1]+PotentialParms[j][j][1]); // p_1^ij=(p_1^i+p_1^j)/2
+          PotentialParms[j][i][1]=0.5*(PotentialParms[i][i][1]+PotentialParms[j][j][1]); // p_1^ji=(p_1^j+p_1^i)/2
+          PotentialParms[i][j][2]=2.0*PotentialParms[i][i][2];
+          PotentialParms[j][i][2]=2.0*PotentialParms[i][i][2];
+        }
 
         if((PotentialType[i][i]==LENNARD_JONES_SHIFTED_FORCE)&&(PotentialType[j][j]==LENNARD_JONES_SHIFTED_FORCE))
         {
@@ -4012,6 +4034,28 @@ void ReadForceFieldDefinitionsMixingRules(void)
           PotentialParms[j][i][1]=sqrt(PotentialParms[i][i][1]*PotentialParms[j][j][1]); // p_1^ji=sqrt(p_1^j*p_1^i)
           PotentialParms[i][j][2]=2.0*PotentialParms[i][i][2]*PotentialParms[j][j][2]/(PotentialParms[i][i][2]+PotentialParms[j][j][2]);
           PotentialParms[j][i][2]=2.0*PotentialParms[i][i][2]*PotentialParms[j][j][2]/(PotentialParms[i][i][2]+PotentialParms[j][j][2]);
+        }
+        if((PotentialType[i][i]==LENNARD_JONES)&&(PotentialType[j][j]==FH4_LENNARD_JONES))
+        {
+          PotentialType[i][j]=FH4_LENNARD_JONES;
+          PotentialType[j][i]=FH4_LENNARD_JONES;
+          PotentialParms[i][j][0]=sqrt(PotentialParms[i][i][0]*PotentialParms[j][j][0]); // p_0^ij=sqrt(p_0^i*p_0^j)
+          PotentialParms[j][i][0]=sqrt(PotentialParms[i][i][0]*PotentialParms[j][j][0]); // p_0^ji=sqrt(p_0^j*p_0^i)
+          PotentialParms[i][j][1]=sqrt(PotentialParms[i][i][1]*PotentialParms[j][j][1]); // p_1^ij=sqrt(p_1^i*p_1^j)
+          PotentialParms[j][i][1]=sqrt(PotentialParms[i][i][1]*PotentialParms[j][j][1]); // p_1^ji=sqrt(p_1^j*p_1^i)
+          PotentialParms[i][j][2]=2.0*PotentialParms[j][j][2];
+          PotentialParms[j][i][2]=2.0*PotentialParms[j][j][2];
+        }
+        if((PotentialType[i][i]==FH4_LENNARD_JONES)&&(PotentialType[j][j]==LENNARD_JONES))
+        {
+          PotentialType[i][j]=FH4_LENNARD_JONES;
+          PotentialType[j][i]=FH4_LENNARD_JONES;
+          PotentialParms[i][j][0]=sqrt(PotentialParms[i][i][0]*PotentialParms[j][j][0]); // p_0^ij=sqrt(p_0^i*p_0^j)
+          PotentialParms[j][i][0]=sqrt(PotentialParms[i][i][0]*PotentialParms[j][j][0]); // p_0^ji=sqrt(p_0^j*p_0^i)
+          PotentialParms[i][j][1]=sqrt(PotentialParms[i][i][1]*PotentialParms[j][j][1]); // p_1^ij=sqrt(p_1^i*p_1^j)
+          PotentialParms[j][i][1]=sqrt(PotentialParms[i][i][1]*PotentialParms[j][j][1]); // p_1^ji=sqrt(p_1^j*p_1^i)
+          PotentialParms[i][j][2]=2.0*PotentialParms[i][i][2];
+          PotentialParms[j][i][2]=2.0*PotentialParms[i][i][2];
         }
 
         if((PotentialType[i][i]==LENNARD_JONES_SHIFTED_FORCE)&&(PotentialType[j][j]==LENNARD_JONES_SHIFTED_FORCE))
