@@ -1284,6 +1284,10 @@ void PrintPreSimulationStatusCurrentSystem(int system)
         break;
     }
   }
+  if (EquationOfState == SOAVE_REDLICH_KWONG) fprintf(FilePtr,"Equation of state: Soave-Redlich-Kwong\n");
+  else if (EquationOfState == PENG_ROBINSON_GASEM) fprintf(FilePtr,"Equation of state: Peng-Robinson with Gasem-Gao-Pan-Robinson alpha function\n");
+  else if (EquationOfState == PENG_ROBINSON_TCC) fprintf(FilePtr,"Equation of state: Peng-Robinson with Twu-Coon-Cunningham alpha function\n");
+  else fprintf(FilePtr,"Equation of state: Peng-Robinson\n");
   fprintf(FilePtr,"\n\n");
 
 
