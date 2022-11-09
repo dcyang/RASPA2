@@ -193,7 +193,6 @@ void ComputeGasPropertiesForAllSystems(void)
     // here, use pressure in Pascal and temperature in Kelvin
     Pressure=therm_baro_stats.ExternalPressure[CurrentSystem][CurrentIsothermPressure]*PRESSURE_CONVERSION_FACTOR;
     Temperature=therm_baro_stats.ExternalTemperature[CurrentSystem];
-
     for(i=0;i<NumberOfComponents;i++)
     {
       if(Components[i].Swapable)
@@ -216,6 +215,15 @@ void ComputeGasPropertiesForAllSystems(void)
            kappa=0.134+0.508*w-0.0467*SQR(w);
            alpha=exp((2.0+0.836*Tr)*(1.0-pow(Tr,kappa)));
            a[i]=0.45724*alpha*SQR(MOLAR_GAS_CONSTANT*Tc)/Pc;
+           b[i]=0.07780*MOLAR_GAS_CONSTANT*Tc/Pc;
+           A[i]=a[i]*Pressure/SQR(MOLAR_GAS_CONSTANT*Temperature);
+           B[i]=b[i]*Pressure/(MOLAR_GAS_CONSTANT*Temperature);
+           break;
+          case PENG_ROBINSON_TCC:
+           temp  = pow(Tr,-0.171813)*exp(0.125283*(1.0-pow(Tr,1.77634)));       /* used as alpha0 */
+           kappa = pow(Tr,-0.607352)*exp(0.511614*(1.0-pow(Tr,2.20517)));       /* used as alpha1 */
+           alpha = temp + w*(kappa - temp);                                     /* alpha0 + w*(alpha1 - alpha0) */
+           a[i]=0.45723*alpha*SQR(MOLAR_GAS_CONSTANT*Tc)/Pc;
            b[i]=0.07780*MOLAR_GAS_CONSTANT*Tc/Pc;
            A[i]=a[i]*Pressure/SQR(MOLAR_GAS_CONSTANT*Temperature);
            B[i]=b[i]*Pressure/(MOLAR_GAS_CONSTANT*Temperature);
@@ -273,6 +281,7 @@ void ComputeGasPropertiesForAllSystems(void)
         break;
       case PENG_ROBINSON:
       case PENG_ROBINSON_GASEM:
+      case PENG_ROBINSON_TCC:
       default:
         Coefficients[3]=1.0;
         Coefficients[2]=Bmix-1.0;
@@ -334,6 +343,7 @@ void ComputeGasPropertiesForAllSystems(void)
         }
         break;
       case PENG_ROBINSON_GASEM:
+      case PENG_ROBINSON_TCC:
       case PENG_ROBINSON:
       default:
         for(i=0;i<NumberOfComponents;i++)

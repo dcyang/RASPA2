@@ -2228,6 +2228,13 @@ int ReadInput(char *input)
          break;
       }
     }
+    if(strcasecmp("EquationOfState",keyword)==0)
+    {
+      if(strcasecmp("SOAVE_REDLICH_KWONG",firstargument)==0) EquationOfState=SOAVE_REDLICH_KWONG;
+      else if(strcasecmp("PENG_ROBINSON_GASEM",firstargument)==0) EquationOfState=PENG_ROBINSON_GASEM;
+      else if(strcasecmp("PENG_ROBINSON_TCC",firstargument)==0) EquationOfState=PENG_ROBINSON_TCC;
+      else EquationOfState=PENG_ROBINSON;
+    }
 
 
     //-----------------------------------------------------------------------------------------------------
