@@ -38,7 +38,7 @@
 
 enum{VAN_DER_WAALS,REDLICH_KWONG,SOAVE_REDLICH_KWONG,PENG_ROBINSON,PENG_ROBINSON_GASEM,PENG_ROBINSON_TCC};
 /* currently supported by ComputeGasPropertiesForAllSystems():
- * SOAVE_REDLICH_KWONG: Soave-Redlich-Kwong EoS and alpha function developed by Nasrifar-Bolland
+ * SOAVE_REDLICH_KWONG: Soave-Redlich-Kwong EoS and alpha function as initially developed
  * PENG_ROBINSON: Peng-Robinson EoS and alpha function as initially developed
  * PENG_ROBINSON_GASEM: Peng-Robinson EoS with alpha function developed by Gasem-Gao-Pan-Robinson
  * PENG_ROBINSON_TCC: Peng-Robinson EoS with alpha function developed by Twu-Coon-Cunningham
