@@ -128,6 +128,9 @@ extern int (*ForbiddenConnectivityTypes)[3];
 
 void CheckFrameworkCharges(void);
 void AddAsymmetricAtom(FRAMEWORK_ASYMMETRIC_ATOM atom);
+void SetBoundaryCondition(int system, REAL eps_angle, REAL eps_length, REAL alpha, REAL beta, REAL gamma, REAL A, REAL B, REAL C);
+void SetBoundaryConditionFromSystem(int system, REAL eps_angle, REAL eps_length);
+
 void ReadFrameworkDefinitionCSSR(void);
 void ReadFrameworkDefinitionDLPOLY(void);
 void CreateAsymetricFrameworkAtoms(void);
@@ -202,6 +205,18 @@ typedef struct FrameworkComponent
   int **CellListHead;                        // the starting atom per cell
   int **CellList;                            // linked list of framework atoms
 
+  // Added by Ambroise de Izarra
+  //-------------------------------------------------------------------
+  REAL ***scaling_pair14VDW;							// Store 14 atoms in the box for VDW.
+  REAL ***scaling_pair14ChargeCharge;                 // Store 14 atoms in the box for chargecharge.
+  PAIR **list14pair;							// Store 14 atom pairs for Ewald summation.
+   
+   
+  int *pair14VDW_size;			 
+  int *pair14ChargeCharge_size; 
+  int *list14pair_size;			
+  //-------------------------------------------------------------------
+
   REAL *FrameworkProbability;
   int FrameworkExclusion;
   int RemoveHydrogenDisorder;
@@ -253,6 +268,11 @@ typedef struct FrameworkComponent
 
   int ReadCIFAsCartesian;
 
+  // Added by Ambroise de Izarra
+  //-------------------------------------------------------------------
+  int * PrintInteractionIndex;
+  //-------------------------------------------------------------------
+  
   char ***ExclusionMatrix;
 
   int **Connectivity;
@@ -490,6 +510,8 @@ void QuenchCoreSHellVelocities(void);
 int ClosestCrystallographicPosition(VECTOR pos);
 void ClosestCrystallographicPosition2(VECTOR pos,int *closest,REAL *minimum_distance);
 
+void AllocateList14atomsVDWandEwald(int system);
+
 void MakeExclusionMatrix(int system);
 void MakeExcludedInteractionLists(int system);
 
@@ -532,4 +554,8 @@ void WriteFrameworkDefinitionMOL(char *string);
 
 void PutNoiseOnFrameworkAtomicPositions(void);
 
+// Added by Ambroise de Izarra
+//-------------------------------------------------------------------
+void printInteractionIndexAtoms(int system);
+//-------------------------------------------------------------------
 #endif
