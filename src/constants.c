@@ -75,6 +75,10 @@ REAL FH_CONVERSION_FACTOR;
 REAL FH4_CONVERSION_FACTOR;
 
 REAL ENERGY_TO_KELVIN;
+// Added by Ambroise de Izarra
+//-------------------------------------------------------------------
+REAL KJ_PER_MOL_TO_ENERGY;
+//-------------------------------------------------------------------
 REAL KELVIN_TO_ENERGY;
 REAL ENERGY_TO_KJ_PER_MOL;
 REAL ENERGY_TO_EV;
@@ -125,6 +129,10 @@ void SetSimulationUnits(void)
     FH4_CONVERSION_FACTOR=1.0;
 
     ENERGY_TO_KELVIN=1.0;
+    // Added by Ambroise de Izarra
+    //------------------------------------------------------------------
+    KJ_PER_MOL_TO_ENERGY=1.0;
+   //-------------------------------------------------------------------
     KELVIN_TO_ENERGY=1.0;
     ENERGY_TO_KJ_PER_MOL=1.0;
     ENERGY_TO_EV=1.0;
@@ -176,6 +184,10 @@ void SetSimulationUnits(void)
     ENERGY_TO_KELVIN=((ENERGY_CONVERSION_FACTOR*AVOGADRO_CONSTANT)/MOLAR_GAS_CONSTANT);
     KELVIN_TO_ENERGY=(MOLAR_GAS_CONSTANT/(ENERGY_CONVERSION_FACTOR*AVOGADRO_CONSTANT));
     ENERGY_TO_KJ_PER_MOL=((ENERGY_CONVERSION_FACTOR*AVOGADRO_CONSTANT)/1000.0);
+    // Added by Ambroise de Izarra
+    //-------------------------------------------------------------------
+    KJ_PER_MOL_TO_ENERGY=(1000.0/(ENERGY_CONVERSION_FACTOR*AVOGADRO_CONSTANT));
+    //-------------------------------------------------------------------
     ENERGY_TO_EV=(ENERGY_TO_KELVIN/11604.23);
     ENERGY_TO_KCAL_PER_MOL=((ENERGY_CONVERSION_FACTOR*AVOGADRO_CONSTANT)/4184.0);
     ENERGY_TO_KCAL15_PER_MOL=((ENERGY_CONVERSION_FACTOR*AVOGADRO_CONSTANT)/4185.5);
@@ -226,6 +238,10 @@ void WriteRestartConstants(FILE *FilePtr)
   // fwrite(&FH4_CONVERSION_FACTOR,sizeof(REAL),1,FilePtr);
 
   fwrite(&ENERGY_TO_KELVIN,sizeof(REAL),1,FilePtr);
+  // Added by Ambroise de Izarra
+  //-------------------------------------------------------------------
+  fwrite(&KJ_PER_MOL_TO_ENERGY,sizeof(REAL),1,FilePtr);
+  //-------------------------------------------------------------------
   fwrite(&KELVIN_TO_ENERGY,sizeof(REAL),1,FilePtr);
   fwrite(&ENERGY_TO_KJ_PER_MOL,sizeof(REAL),1,FilePtr);
   fwrite(&ENERGY_TO_EV,sizeof(REAL),1,FilePtr);
@@ -285,6 +301,10 @@ void ReadRestartConstants(FILE *FilePtr)
   // fread(&FH4_CONVERSION_FACTOR,sizeof(REAL),1,FilePtr);
 
   fread(&ENERGY_TO_KELVIN,sizeof(REAL),1,FilePtr);
+  // Added by Ambroise de Izarra
+  //-------------------------------------------------------------------
+  fread(&KJ_PER_MOL_TO_ENERGY,sizeof(REAL),1,FilePtr);
+  //-------------------------------------------------------------------
   fread(&KELVIN_TO_ENERGY,sizeof(REAL),1,FilePtr);
   fread(&ENERGY_TO_KJ_PER_MOL,sizeof(REAL),1,FilePtr);
   fread(&ENERGY_TO_EV,sizeof(REAL),1,FilePtr);

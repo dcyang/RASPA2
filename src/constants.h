@@ -142,6 +142,10 @@ extern REAL FH4_CONVERSION_FACTOR;
 
 extern REAL ENERGY_TO_KELVIN;
 extern REAL KELVIN_TO_ENERGY;
+// Added by Ambroise de Izarra
+//-------------------------------------------------------------------
+extern REAL KJ_PER_MOL_TO_ENERGY;
+//-------------------------------------------------------------------
 extern REAL ENERGY_TO_KJ_PER_MOL;
 extern REAL ENERGY_TO_EV;
 extern REAL ENERGY_TO_KCAL_PER_MOL;
