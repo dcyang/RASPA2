@@ -5670,7 +5670,7 @@ int CalculateFrameworkChargeChargeElectricFieldMC(int New,int excl_ads,int excl_
   int i,j,k,f1;
   int typeA,typeB;
   REAL rr;
-  REAL chargeA,chargeB,temp;
+  REAL chargeA,chargeB,temp,energy, force_factor;
   REAL  force_factor_A,force_factor_B;
   VECTOR posA,posB,dr;
 
@@ -5702,21 +5702,21 @@ int CalculateFrameworkChargeChargeElectricFieldMC(int New,int excl_ads,int excl_
 
             if(rr<CutOffChargeChargeSquared[CurrentSystem])
             {
-              temp=PotentialValueCoulombic(1.0,1.0,sqrt(rr));
+              PotentialGradientCoulombic(1.0,1.0,rr,&energy,&force_factor);
 
               // forces
-              force_factor_A=temp*chargeB;
-              force_factor_B=temp*chargeA;
+              force_factor_A=force_factor*chargeB;
+              force_factor_B=force_factor*chargeA;
 
-              Adsorbates[CurrentSystem][i].Atoms[j].ElectricField.x-=force_factor_A*dr.x;
-              Adsorbates[CurrentSystem][i].Atoms[j].ElectricField.y-=force_factor_A*dr.y;
-              Adsorbates[CurrentSystem][i].Atoms[j].ElectricField.z-=force_factor_A*dr.z;
+              Adsorbates[CurrentSystem][i].Atoms[j].ElectricField.x-=2.0*force_factor_A*dr.x;
+              Adsorbates[CurrentSystem][i].Atoms[j].ElectricField.y-=2.0*force_factor_A*dr.y;
+              Adsorbates[CurrentSystem][i].Atoms[j].ElectricField.z-=2.0*force_factor_A*dr.z;
 
               if((BackPolarization)||(Framework[CurrentSystem].FrameworkModels[f1]==FLEXIBLE))
               {
-                Framework[CurrentSystem].Atoms[f1][k].ElectricField.x+=force_factor_B*dr.x;
-                Framework[CurrentSystem].Atoms[f1][k].ElectricField.y+=force_factor_B*dr.y;
-                Framework[CurrentSystem].Atoms[f1][k].ElectricField.z+=force_factor_B*dr.z;
+                Framework[CurrentSystem].Atoms[f1][k].ElectricField.x+=2.0*force_factor_B*dr.x;
+                Framework[CurrentSystem].Atoms[f1][k].ElectricField.y+=2.0*force_factor_B*dr.y;
+                Framework[CurrentSystem].Atoms[f1][k].ElectricField.z+=2.0*force_factor_B*dr.z;
               }
             }
           }
@@ -5751,21 +5751,21 @@ int CalculateFrameworkChargeChargeElectricFieldMC(int New,int excl_ads,int excl_
 
             if(rr<CutOffChargeChargeSquared[CurrentSystem])
             {
-              temp=PotentialValueCoulombic(1.0,1.0,sqrt(rr));
+              PotentialGradientCoulombic(1.0,1.0,rr,&energy,&force_factor);
 
               // forces
-              force_factor_A=temp*chargeB;
-              force_factor_B=temp*chargeA;
+              force_factor_A=force_factor*chargeB;
+              force_factor_B=force_factor*chargeA;
 
-              Cations[CurrentSystem][i].Atoms[j].ElectricField.x-=force_factor_A*dr.x;
-              Cations[CurrentSystem][i].Atoms[j].ElectricField.y-=force_factor_A*dr.y;
-              Cations[CurrentSystem][i].Atoms[j].ElectricField.z-=force_factor_A*dr.z;
+              Cations[CurrentSystem][i].Atoms[j].ElectricField.x-=2.0*force_factor_A*dr.x;
+              Cations[CurrentSystem][i].Atoms[j].ElectricField.y-=2.0*force_factor_A*dr.y;
+              Cations[CurrentSystem][i].Atoms[j].ElectricField.z-=2.0*force_factor_A*dr.z;
 
               if((BackPolarization)||(Framework[CurrentSystem].FrameworkModel==FLEXIBLE))
               {
-                Framework[CurrentSystem].Atoms[f1][k].ElectricField.x+=force_factor_B*dr.x;
-                Framework[CurrentSystem].Atoms[f1][k].ElectricField.y+=force_factor_B*dr.y;
-                Framework[CurrentSystem].Atoms[f1][k].ElectricField.z+=force_factor_B*dr.z;
+                Framework[CurrentSystem].Atoms[f1][k].ElectricField.x+=2.0*force_factor_B*dr.x;
+                Framework[CurrentSystem].Atoms[f1][k].ElectricField.y+=2.0*force_factor_B*dr.y;
+                Framework[CurrentSystem].Atoms[f1][k].ElectricField.z+=2.0*force_factor_B*dr.z;
               }
             }
           }
@@ -5798,21 +5798,21 @@ int CalculateFrameworkChargeChargeElectricFieldMC(int New,int excl_ads,int excl_
 
           if(rr<CutOffChargeChargeSquared[CurrentSystem])
           {
-            temp=PotentialValueCoulombic(1.0,1.0,sqrt(rr));
+            PotentialGradientCoulombic(1.0,1.0,rr,&energy,&force_factor);
 
             // forces
-            force_factor_A=temp*chargeB;
-            force_factor_B=temp*chargeA;
+            force_factor_A=force_factor*chargeB;
+            force_factor_B=force_factor*chargeA;
 
-            ElectricFieldAtTrialPosition[CurrentSystem][i].x-=force_factor_A*dr.x;
-            ElectricFieldAtTrialPosition[CurrentSystem][i].y-=force_factor_A*dr.y;
-            ElectricFieldAtTrialPosition[CurrentSystem][i].z-=force_factor_A*dr.z;
+            ElectricFieldAtTrialPosition[CurrentSystem][i].x-=2.0*force_factor_A*dr.x;
+            ElectricFieldAtTrialPosition[CurrentSystem][i].y-=2.0*force_factor_A*dr.y;
+            ElectricFieldAtTrialPosition[CurrentSystem][i].z-=2.0*force_factor_A*dr.z;
 
             if((BackPolarization)||(Framework[CurrentSystem].FrameworkModels[f1]==FLEXIBLE))
             {
-              Framework[CurrentSystem].Atoms[f1][k].ElectricField.x+=force_factor_B*dr.x;
-              Framework[CurrentSystem].Atoms[f1][k].ElectricField.y+=force_factor_B*dr.y;
-              Framework[CurrentSystem].Atoms[f1][k].ElectricField.z+=force_factor_B*dr.z;
+              Framework[CurrentSystem].Atoms[f1][k].ElectricField.x+=2.0*force_factor_B*dr.x;
+              Framework[CurrentSystem].Atoms[f1][k].ElectricField.y+=2.0*force_factor_B*dr.y;
+              Framework[CurrentSystem].Atoms[f1][k].ElectricField.z+=2.0*force_factor_B*dr.z;
             }
           }
         }
